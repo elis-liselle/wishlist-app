@@ -2,13 +2,15 @@ const express = require("express");
 const ejs = require("ejs");
 const mongoose = require("mongoose");
 
-mongoose.Promise = global.Promise;
 mongoose
-  .connect("mongodb://localhost:27017/wishes")
+  .connect("mongodb://localhost:27017/WishDB")
   .then(() => console.log("Connected to MongoDB..."))
   .catch((err) => console.error("Could not connect to MongoDB...", err));
+require("./models/wish");
 
 const wishListPage = require("./routes/wishList");
+const adminPage = require("./routes/admin");
+const errorPage = require("./routes/error");
 
 const app = express();
 
@@ -17,20 +19,10 @@ app.use(express.static("public"));
 
 app.use(express.urlencoded({ extended: true }));
 
-//app.use(wishListPage);
-app.use("/admin", (req, res) => {
-  res.sendFile(__dirname + "/admin.ejs");
-});
-app.get("/admin", wishListController.getHomePage, (req, res, next) => {
-  console.log(req.data);
-  res.send(req.data);
-});
+app.use(wishListPage);
+app.use(adminPage);
+app.use(errorPage);
 
-var wishes = new mongoose.Schema({
-  id: Int,
-  wish: String,
-});
-const Wish = mongoose.model("Wish", wishes);
 
 app.listen(3000, function () {
   console.log("Server is running on port 3000.");

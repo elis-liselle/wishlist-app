@@ -1,44 +1,56 @@
 const date = require("../getDate.js");
+const mongoose = require("mongoose");
+const WishFromMongoDb = mongoose.model("Wish");
+
 const Wish = require("../models/wish");
 
-exports.getHomePage = (req, res, next) => {
-  Wish.find({}, (error, wishes) => {
-    if (error) next(error);
-    req.data = wishes;
-    next();
+exports.getHomePage = (req, res) => {
+  let today = date.getTodayDateLong();
+
+  WishFromMongoDb.find((error, wishes) => {
+    if (!error) {
+      res.render("index.ejs", { date: today, myWish: wishes });
+    } else {
+      console.log(error);
+    }
   });
 };
-//let wishList = [];
 
-// exports.getHomePage = (req, res) => {
-//   Wish.fetchWishes((wishes) => {
-//     res.render("admin.ejs", { myWish: wishes });
-//   });
-// };
+exports.getAdminPage = (req, res) => {
+  let today = date.getTodayDateLong();
+  WishFromMongoDb.find((error, wishes) => {
+    if (!error) {
+      res.render("admin.ejs", { date: today, myWish: wishes });
+    } else {
+      console.log(error);
+    }
+  });
+};
 
 exports.postNewWish = (req, res) => {
-  let userWish = req.body.wishInput;
-  // let userWish = {
-  //   wish: req.body.wishInput,
-  // };
+  const userWish = req.body.newWish;
 
-  let newWish = new Wish(userWish);
-  newWish.saveWish();
+  let newWish = new WishFromMongoDb();
+  newWish.wish = userWish;
 
-  console.log(wishList);
-
-  res.redirect("/");
+  newWish.save((error, response) => {
+    if (!error) {
+      console.log(response);
+      res.redirect("/admin");
+    } else {
+      console.log(error);
+    }
+  });
 };
 
 exports.deleteWish = (req, res) => {
-  let wishToDelete = req.body.oldWish;
+  let wishToDelete = req.body.deleteWishButton;
 
-  // let wishToDelete = {
-  //   wish: req.body.oldWish,
-  // };
-
-  console.log("from delete " + wishToDelete.wishInput);
-
-  Wish.deleteItem(wishToDelete);
-  res.redirect("/");
+  WishFromMongoDb.findByIdAndDelete(wishToDelete, (error) => {
+    if (!error) {
+      res.redirect("/admin");
+    } else {
+      console.log("Deleting failed");
+    }
+  });
 };

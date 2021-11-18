@@ -1,7 +1,11 @@
-// const Schema = mongoose.Schema;
-// const ObjectId = Schema.ObjectId;
+const mongoose = require("mongoose");
 
-// const BlogPost = new Schema({
-//   id: ObjectId,
-//   wish: String,
-// });
+const Schema = mongoose.Schema;
+
+const wishSchema = new Schema({
+  wish: {
+    type: String,
+  },
+});
+
+mongoose.model("Wish", wishSchema);

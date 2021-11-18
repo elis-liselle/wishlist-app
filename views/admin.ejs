@@ -5,40 +5,40 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin page</title>
-    <script>
-        src="https://kit.fontawesome.com/733294f120.js"
+     <script
+      src="https://kit.fontawesome.com/733294f120.js"
       crossorigin="anonymous"
-    </script>
+    ></script>
     <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
+   <div class="box" id="heading">
+      <h1><i class="far fa-calendar-check"></i> <%= date %></h1>
+    </div>
+
     <div class="box" id="heading">
-        <h1>Wish list</h1>
+      <h1>Wish List <i>(admin page)</i></h1>
     </div>
     <div class="box">
-        <% for(let i = 0; i < myWish.length; i++) %>
-      <form action="/wishDelete" method="POST">
+        <% for(let i = 0; i < myWish.length; i++) {%>
+      <form action="/deleteWish" method="POST">
         <div class="wish">
-          <input
-            type="hidden"
-            value="<%= myWish[i].wish.wishInput%>"
-            name="oldWish"
-          />
-
-          <p><%= myWish[i].wish.wishInput%></p>
-
-          <button type="submit" name="deleteWishButton">
+          <p><%= myWish[i].wish %></p>
+          <button type="submit" name="deleteWishButton" value="<%= myWish[i].id %>">
             <i class="fas fa-trash"></i>
           </button>
         </div>
       </form>
       <% } %>
+    </div>
 
-      <form action="/" class="class" method="POST">
-        <input type="text" name="wishInput" placeholder="Add Wish" />
+    <div class="box">
+      <form action="/addWish" class="class" method="POST">
+        <input type="text" name="newWish" placeholder="Add Wish" />
         <button type="submit">+</button>
       </form>
     </div>
+    
     <footer>
       <span>Elis-Liselle S. &#169; 2021</span>
     </footer>
